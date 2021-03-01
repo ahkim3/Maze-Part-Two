@@ -10,6 +10,8 @@ without outside assistance.
 Signature: Andrew Kim
 */
 
+// TODO: MAKE STUFF CONSTANT
+
 #include <iostream>
 #include <fstream>
 #include <Windows.h>
@@ -19,6 +21,7 @@ using namespace std;
 enum Entrance { BEGIN_X = 0, BEGIN_Y = 2 }; // Position of entrance to maze
 enum class Direction { DOWN, RIGHT, UP, LEFT };
 
+void mazeGenerator(char[12][12], int, int*, int*);
 void fill(char[12][12], int, string);
 void mazeTraverse(char[12][12], int, int&, int&, Direction);
 bool validMove(char[12][12], int, int);
@@ -38,6 +41,12 @@ int main()
     mazeTraverse(maze, 12, xPos, yPos, direction);
 }
 
+
+// Generated a new maze with a random starting and exit location
+void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
+{
+
+}
 
 // Fill array with maze from a file
 void fill(char maze[12][12], int size, string inputFileName)

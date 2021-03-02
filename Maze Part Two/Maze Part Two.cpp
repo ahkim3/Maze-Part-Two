@@ -15,6 +15,7 @@ Signature: Andrew Kim
 #include <iostream>
 #include <fstream>
 #include <Windows.h>
+#include <time.h>
 
 using namespace std;
 
@@ -33,18 +34,36 @@ int main()
 {
     char maze[12][12];
     int xPos = BEGIN_X, yPos = BEGIN_Y;
+    int* xPtr = new int, * yPtr = new int;
+
+    srand(time(NULL));
+
+    mazeGenerator(maze, 12, xPtr, yPtr);
 
     fill(maze, 12, "Maze.txt");
 
     Direction direction = Direction::DOWN; // Initial direction attempt
 
     mazeTraverse(maze, 12, xPos, yPos, direction);
+
+    delete xPtr, yPtr;
 }
 
 
 // Generated a new maze with a random starting and exit location
 void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
 {
+    int xEnd, yEnd;
+
+    // Generate random starting location from [1 - (size - 2)]
+    *xPtr = 0;
+    *yPtr = (rand() % (size - 2)) + 1;
+    
+    // Generate random exit location from [1 - (size - 2)]
+    xEnd = size;
+    yEnd = (rand() % (size - 2)) + 1;
+
+    // TODO: Generate new maze
 
 }
 

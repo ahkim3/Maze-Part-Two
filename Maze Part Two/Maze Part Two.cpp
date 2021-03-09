@@ -33,20 +33,26 @@ void printMaze(char[12][12], int);
 int main()
 {
     char maze[12][12];
-    int xPos = BEGIN_X, yPos = BEGIN_Y;
+    int xPos, yPos;
     int* xPtr = new int, * yPtr = new int;
 
     srand(time(NULL));
 
     mazeGenerator(maze, 12, xPtr, yPtr);
 
-    fill(maze, 12, "Maze.txt");
+    //fill(maze, 12, "Maze.txt");
 
     Direction direction = Direction::DOWN; // Initial direction attempt
+    
+    xPos = *xPtr;
+    yPos = *yPtr;
+
+    delete xPtr;
+    delete yPtr;
 
     mazeTraverse(maze, 12, xPos, yPos, direction);
 
-    delete xPtr, yPtr;
+    return 0;
 }
 
 
@@ -54,6 +60,7 @@ int main()
 void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
 {
     int xEnd, yEnd;
+    bool newWall;
 
     // Generate random starting location from [1 - (size - 2)]
     *xPtr = 0;
@@ -63,9 +70,34 @@ void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
     xEnd = size;
     yEnd = (rand() % (size - 2)) + 1;
 
-    // TODO: Generate new maze
+    // Generate inner portion of new maze
+    for (int j = 0; j < size; j++)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            newWall = (bool)(rand() % 2); // Determines new character
+            
+            // Assigns determined character
+            if (newWall)
+                maze[i][j] = '#'; // Wall
+            else
+                maze[i][j] = '.'; // Path
+        }
+    }
 
+    // Generate left border
+    for (int i = 0; i < size; i++)
+        maze[0][i] = '#';
+
+    // Generate right border
+    for (int i = 0; i < size; i++)
+        maze[size][i] = '#';
+
+    // Place entrance and exit
+    maze[*xPtr][*yPtr] = '.'; // Entrance
+    maze[xEnd][yEnd] = '.'; // Exit
 }
+
 
 // Fill array with maze from a file
 void fill(char maze[12][12], int size, string inputFileName)

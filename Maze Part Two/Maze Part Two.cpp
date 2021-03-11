@@ -66,9 +66,9 @@ void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
     yEnd = (rand() % (size - 2)) + 1;
     
     // Generate inner portion of new maze
-    for (int j = 0; j < size; j++)
+    for (int j = 1; j < size - 1; j++)
     {
-        for (int i = 0; i < size; i++)
+        for (int i = 1; i < size - 1; i++)
         {
             newWall = (bool)(rand() % 2); // Determines new character
             

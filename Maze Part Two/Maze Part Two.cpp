@@ -20,7 +20,6 @@ using namespace std;
 enum class Direction { DOWN, RIGHT, UP, LEFT };
 
 void mazeGenerator(char[12][12], int, int*, int*);
-void fill(char[12][12], int, string);
 void mazeTraverse(char[12][12], int, int&, int&, Direction, int*, int*);
 bool validMove(char[12][12], int, int);
 bool isSolved(int, int, int, int*, int*);
@@ -92,26 +91,6 @@ void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
     // Place entrance and exit
     maze[*xPtr][*yPtr] = '.'; // Entrance
     maze[xEnd][yEnd] = '.'; // Exit
-}
-
-
-// Fill array with maze from a file
-void fill(char maze[12][12], int size, string inputFileName)
-{
-    string name;
-    ifstream input;
-
-    // Reads file and stores each character in an array element
-    input.open(inputFileName, ios::in);
-    if (input.is_open())
-    {
-        for (int j = 0; j < size; j++)
-        {
-            for (int i = 0; i < size; i++)
-                input >> maze[i][j];
-        }
-        input.close();
-    }
 }
 
 

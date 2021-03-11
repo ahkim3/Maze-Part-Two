@@ -1,6 +1,6 @@
 /*
 Name: Andrew Kim
-Date: March 1, 2021
+Date: March 11, 2021
 Program: Even More A-Maze-ing
 
 I hereby certify that this program represents my
@@ -10,8 +10,6 @@ without outside assistance.
 Signature: Andrew Kim
 */
 
-// TODO: MAKE STUFF CONSTANT
-
 #include <iostream>
 #include <fstream>
 #include <Windows.h>
@@ -19,14 +17,13 @@ Signature: Andrew Kim
 
 using namespace std;
 
-enum Entrance { BEGIN_X = 0, BEGIN_Y = 2 }; // Position of entrance to maze
 enum class Direction { DOWN, RIGHT, UP, LEFT };
 
 void mazeGenerator(char[12][12], int, int*, int*);
 void fill(char[12][12], int, string);
-void mazeTraverse(char[12][12], int, int&, int&, Direction);
+void mazeTraverse(char[12][12], int, int&, int&, Direction, int*, int*);
 bool validMove(char[12][12], int, int);
-bool isSolved(int, int, int);
+bool isSolved(int, int, int, int*, int*);
 void printMaze(char[12][12], int);
 
 
@@ -34,23 +31,21 @@ int main()
 {
     char maze[12][12];
     int xPos, yPos;
-    int* xPtr = new int, * yPtr = new int;
+    int* xPtr = new int, * yPtr = new int; // Will store starting position
 
     srand(time(NULL));
 
     mazeGenerator(maze, 12, xPtr, yPtr);
 
-    //fill(maze, 12, "Maze.txt");
-
-    Direction direction = Direction::DOWN; // Initial direction attempt
-    
+    // Keeps track of current position
     xPos = *xPtr;
     yPos = *yPtr;
 
-    delete xPtr;
-    delete yPtr;
+    Direction direction = Direction::DOWN; // Initial direction attempt
 
-    mazeTraverse(maze, 12, xPos, yPos, direction);
+    mazeTraverse(maze, 12, xPos, yPos, direction, xPtr, yPtr);
+
+    delete xPtr, yPtr;
 
     return 0;
 }
@@ -67,9 +62,9 @@ void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
     *yPtr = (rand() % (size - 2)) + 1;
     
     // Generate random exit location from [1 - (size - 2)]
-    xEnd = size;
+    xEnd = size - 1;
     yEnd = (rand() % (size - 2)) + 1;
-
+    
     // Generate inner portion of new maze
     for (int j = 0; j < size; j++)
     {
@@ -84,15 +79,16 @@ void mazeGenerator(char maze[12][12], int size, int* xPtr, int* yPtr)
                 maze[i][j] = '.'; // Path
         }
     }
-
-    // Generate left border
+    
+    // Create borders
     for (int i = 0; i < size; i++)
+    {
         maze[0][i] = '#';
-
-    // Generate right border
-    for (int i = 0; i < size; i++)
-        maze[size][i] = '#';
-
+        maze[size - 1][i] = '#';
+        maze[i][0] = '#';
+        maze[i][size - 1] = '#';
+    }
+    
     // Place entrance and exit
     maze[*xPtr][*yPtr] = '.'; // Entrance
     maze[xEnd][yEnd] = '.'; // Exit
@@ -121,7 +117,7 @@ void fill(char maze[12][12], int size, string inputFileName)
 
 // Executes tasks for each step in maze
 void mazeTraverse(char maze[12][12], int size, int& xCurrent, int& yCurrent,
-    Direction direction)
+    Direction direction, int* beginX, int* beginY)
 {
     bool directionFound;
     Direction nextDirection;
@@ -140,7 +136,7 @@ void mazeTraverse(char maze[12][12], int size, int& xCurrent, int& yCurrent,
         maze[xCurrent][yCurrent] = previousChar; // Replace with original char
 
         // Continues onto next position if maze is not yet solved
-        if (!(isSolved(size, xCurrent, yCurrent)))
+        if (!(isSolved(size, xCurrent, yCurrent, beginX, beginY)))
         {
             directionFound = false;
 
@@ -197,12 +193,13 @@ void mazeTraverse(char maze[12][12], int size, int& xCurrent, int& yCurrent,
                 xCurrent--;
                 break;
             }
-            mazeTraverse(maze, size, xCurrent, yCurrent, nextDirection);
+            mazeTraverse(maze, size, xCurrent, yCurrent, nextDirection, 
+                beginX, beginY);
         }
     }
     // Check if maze is unsolvable (boundary is breached)
-    else if ((xCurrent == BEGIN_X - 1 && yCurrent == BEGIN_Y)
-        || (xCurrent == BEGIN_X && yCurrent == BEGIN_Y - 1))
+    else if ((xCurrent == *beginX - 1 && yCurrent == *beginY)
+        || (xCurrent == *beginX && yCurrent == *beginY - 1))
         cout << endl << "Maze is unsolvable." << endl;
     else
         cout << endl << "Solved!" << endl;
@@ -219,10 +216,10 @@ bool validMove(char maze[12][12], int xCoord, int yCoord)
 
 
 // Determines if exit of maze has been found
-bool isSolved(int size, int xCurrent, int yCurrent)
+bool isSolved(int size, int xCurrent, int yCurrent, int* beginX, int* beginY)
 {
     // Edge of array (exit) has been reached AND it's not the entrance
-    if ((xCurrent != BEGIN_X && yCurrent != BEGIN_Y)
+    if ((xCurrent != *beginX && yCurrent != *beginY)
         && (xCurrent == 0 || xCurrent == size
             || yCurrent == 0 || yCurrent == size))
         return true;

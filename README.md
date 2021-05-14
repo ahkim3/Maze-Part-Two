@@ -5,7 +5,7 @@
 
 ## Prompt
 
-![Maze Part Two](https://github.com/ahkim3/Maze-Part-Two/blob/main/Maze/Maze%20Part%20Two%20Prompt.png?raw=true "Prompt")
+![Maze Part Two](https://github.com/ahkim3/Maze-Part-Two/blob/main/Maze%20Part%20Two%20Prompt.png?raw=true "Prompt")
 
 ## Authors
 - Andrew Kim
